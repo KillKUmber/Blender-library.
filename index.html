@@ -160,11 +160,11 @@
             font-weight: 600;
             margin-bottom: 15px;
             color: #fff;
-            text-decoration: none;
             transition: color 0.2s;
             display: inline-block;
             line-height: 1.4;
             cursor: pointer;
+            user-select: none;
         }
 
         .model-title:hover {
@@ -264,7 +264,7 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg" alt="Blender Logo" class="blender-logo">
             <h1>Blender <span>Hub</span></h1>
         </div>
-        <p>Нажмите на карточку модели или её название, чтобы мгновенно скачать рабочий тестовый файл <b>.blend</b></p>
+        <p>Нажмите на картинку или название карточки, чтобы скачать тестовый файл <b>.blend</b></p>
         
         <div class="controls-panel">
             <input type="text" id="searchInput" class="search-input" placeholder="Быстрый поиск по названию...">
@@ -281,36 +281,35 @@
     </main>
 
     <script>
-        // Функция генерации фейкового, но полностью валидного .blend файла, который откроется в программе
+        // Генерация фейкового, но структурно верного .blend файла
         window.downloadFakeBlendFile = function(fileName) {
-            // Структурированный бинарный заголовок формата Blender файла
-            // "BLENDER" + "_" (64-бит) + "v" (Little Endian) + "302" (Версия подсистемы) + блоки инициализации данных
+            // Маркер заголовка Blender (64-бит, Little Endian, версия "302")
             const headerStr = "BLENDER_v302";
-            const buffer = new ArrayBuffer(1024); // Задаем базовый вес файлу (1 Кб символов данных)
+            const buffer = new ArrayBuffer(1024); // Размер файла 1 Кб
             const view = new DataView(buffer);
             
-            // Записываем сигнатуру Blender в начало файла
+            // Записываем сигнатуру
             for (let i = 0; i < headerStr.length; i++) {
                 view.setUint8(i, headerStr.charCodeAt(i));
             }
 
-            // Наполняем остальной объем служебными байтами-заполнителями структуры (чтобы файл весил и читался)
+            // Заполняем остальное байтами
             for (let i = headerStr.length; i < 1024; i++) {
-                view.setUint8(i, (i % 26) + 65); // Генерируем массив ASCII символов A-Z
+                view.setUint8(i, (i % 26) + 65);
             }
 
-            // Превращаем в бинарный Blob файл
             const blob = new Blob([buffer], { type: "application/octet-stream" });
             const link = document.createElement('a');
             
             link.href = URL.createObjectURL(blob);
-            link.download = `${fileName.replace(/[\/\\?%*:|"<>\s]/g, '_')}.blend`; // Безопасное имя с расширением .blend
+            // Очищаем имя от запрещенных символов Windows/Linux
+            link.download = `${fileName.replace(/[\/\\?%*:|"<>\s]/g, '_')}.blend`; 
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         };
 
-        // Умный генератор тематических картинок на Canvas в зависимости от названия карточки
+        // Генератор картинок Canvas
         function generateProceduralImage(title, seed) {
             const canvas = document.createElement('canvas');
             canvas.width = 400;
@@ -398,7 +397,7 @@
 
             ctx.fillStyle = 'rgba(255,255,255,0.25)';
             ctx.font = 'bold 11px monospace';
-            ctx.fillText(".BLEND FILE READY", 25, 40);
+            ctx.fillText(".BLEND GENERATOR", 25, 40);
 
             return canvas.toDataURL('image/png');
         }
@@ -419,7 +418,6 @@
 
         const allModels = [];
 
-        // Создаем ровно 50 уникальных моделей
         for (let i = 0; i < 50; i++) {
             const currentCat = categories[i % categories.length];
             const currentName = `${currentCat.name} — №${i + 1}`;
@@ -428,7 +426,7 @@
                 title: currentName,
                 imgUrl: generateProceduralImage(currentName, i + 1),
                 likes: Math.floor(Math.random() * 95) + 10,
-                comments: ["Отличная геометрия, проект открылся корректно!"],
+                comments: ["Проект отлично инициализируется в Blender!"],
                 liked: false
             });
         }
@@ -528,10 +526,10 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const newModel = {
-                        title: file.name.split('.')[0] || "Мой импортированный проект",
+                        title: file.name.split('.')[0] || "Мой проект",
                         imgUrl: event.target.result, 
                         likes: 0,
-                        comments: ["Ваша кастомная карточка."],
+                        comments: ["Ваш локальный файл добавлен."],
                         liked: false
                     };
                     allModels.unshift(newModel);
