@@ -283,17 +283,14 @@
     <script>
         // Генерация фейкового, но структурно верного .blend файла
         window.downloadFakeBlendFile = function(fileName) {
-            // Маркер заголовка Blender (64-бит, Little Endian, версия "302")
             const headerStr = "BLENDER_v302";
-            const buffer = new ArrayBuffer(1024); // Размер файла 1 Кб
+            const buffer = new ArrayBuffer(1024);
             const view = new DataView(buffer);
             
-            // Записываем сигнатуру
             for (let i = 0; i < headerStr.length; i++) {
                 view.setUint8(i, headerStr.charCodeAt(i));
             }
 
-            // Заполняем остальное байтами
             for (let i = headerStr.length; i < 1024; i++) {
                 view.setUint8(i, (i % 26) + 65);
             }
@@ -302,14 +299,13 @@
             const link = document.createElement('a');
             
             link.href = URL.createObjectURL(blob);
-            // Очищаем имя от запрещенных символов Windows/Linux
             link.download = `${fileName.replace(/[\/\\?%*:|"<>\s]/g, '_')}.blend`; 
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         };
 
-        // Генератор картинок Canvas
+        // Генератор картинок Canvas под тему карточки
         function generateProceduralImage(title, seed) {
             const canvas = document.createElement('canvas');
             canvas.width = 400;
@@ -418,9 +414,10 @@
 
         const allModels = [];
 
+        // Генерируем ровно 50 уникальных карточек без сквозной нумерации в названии
         for (let i = 0; i < 50; i++) {
             const currentCat = categories[i % categories.length];
-            const currentName = `${currentCat.name} — №${i + 1}`;
+            const currentName = currentCat.name;
             
             allModels.push({
                 title: currentName,
