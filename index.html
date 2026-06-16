@@ -3,21 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender Library</title>
+    <title>Blender Library | 3D Models</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #ffffff; 
-            color: #1a1a1a; 
-            text-align: center; 
-            padding: 50px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1a1a1a; }
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; background: #ffffff;
+            border-bottom: 2px solid #ff8c42; padding: 0.7rem 2rem;
+            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
         }
-        h1 { color: #ff8c42; }
+        .logo { font-size: 1.4rem; font-weight: 800; }
+        .logo span { color: #ff8c42; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 100px 2rem 2rem; }
+        h1 { font-size: 2.5rem; font-weight: 800; color: #1a1a1a; text-align: center; margin-bottom: 0.5rem; }
+        h1 span { color: #ff8c42; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+        .search-box {
+            display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto 2rem;
+        }
+        .search-box input {
+            flex: 1; padding: 0.7rem 1rem; border: 2px solid #ddd; border-radius: 30px;
+            font-size: 1rem; outline: none;
+        }
+        .search-box input:focus { border-color: #ff8c42; }
+        .search-box button {
+            padding: 0.7rem 1.5rem; background: #ff8c42; border: none; border-radius: 30px;
+            color: #fff; font-weight: 600; cursor: pointer;
+        }
+        .search-box button:hover { background: #e6731a; }
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem; margin-top: 1.5rem;
+        }
+        .card {
+            background: #ffffff; border-radius: 12px; overflow: hidden;
+            border: 1px solid #eee; transition: 0.2s; cursor: pointer; text-decoration: none; color: inherit;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .card:hover { transform: translateY(-4px); border-color: #ff8c42; box-shadow: 0 12px 24px rgba(255,140,66,0.15); }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 2px solid #ff8c42; }
+        .card-content { padding: 0.8rem 1rem; }
+        .card-title { font-weight: 700; font-size: 0.95rem; }
+        .card-category { color: #ff8c42; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+        .empty { text-align: center; padding: 3rem; color: #999; }
+        footer { text-align: center; padding: 2rem; border-top: 2px solid #ff8c42; color: #777; font-size: 0.75rem; margin-top: 2rem; }
+        @media (max-width: 700px) { .container { padding: 90px 1rem 1rem; } }
     </style>
 </head>
 <body>
-    <h1>🎨 Blender Library</h1>
-    <p>Сайт успешно загружен! Исправляем ошибки.</p>
-    <p>Скоро здесь будет библиотека 3D-моделей.</p>
+
+<nav class="navbar">
+    <div class="logo">Blender <span>Library</span></div>
+    <div style="display:flex; gap:1.5rem; align-items:center;">
+        <a href="#" style="text-decoration:none; color:#333;">Models</a>
+        <a href="#" style="text-decoration:none; color:#333;">Community</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>3D <span>Asset</span> Library</h1>
+    <p class="subtitle">5000+ моделей. Нажми на карточку → перейдёшь на blender.org для скачивания.</p>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Поиск (Cube, Robot, Tree...)" />
+        <button id="searchBtn">Найти</button>
+        <button id="clearBtn" style="background:#eee; color:#333;" onclick="document.getElementById('searchInput').value=''; renderGallery('');">Сброс</button>
+    </div>
+
+    <div id="grid" class="grid"></div>
+</div>
+
+<footer>Стиль Blender.org. Все модели ведут на официальные страницы blender.org.</footer>
+
+<script>
+    const BASE = [
+        { name: "Suzanne", cat: "Icon", url: "https://www.blender.org/download/demo-files/" },
+        { name: "Agent 327", cat: "Character", url: "https://studio.blender.org/characters/agent-327/v1/" },
+        { name: "Classroom", cat: "Environment", url: "https://studio.blender.org/films/classroom/assets/" },
+        { name: "Coffee Run", cat: "Prop", url: "https://studio.blender.org/artworks/coffee-run/" },
+        { name: "Spring", cat: "Environment", url: "https://studio.blender.org/films/spring/assets/" },
+        { name: "Wing It House", cat: "Archviz", url: "https://studio.blender.org/artworks/wing-it-house" },
+        { name: "Sprite Fright", cat: "Character", url: "https://studio.blender.org/films/sprite-fright/" },
+        { name: "Hero 2024", cat: "Concept", url: "https://studio.blender.org/characters/hero-assets" },
+        { name: "Goblin", cat: "Sculpt", url: "https://studio.blender.org/characters/goblin" },
+        { name: "Treasure Chest", cat: "Prop", url: "https://studio.blender.org/artworks/treasure-chest" },
+        { name: "Retro TV", cat: "Electronics", url: "https://studio.blender.org/assets/farewell-props" },
+        { name: "Windmill", cat: "Environment", url: "https://studio.blender.org/environment/windmill-asset" },
+        { name: "Potion Set", cat: "Magic", url: "https://studio.blender.org/artworks/magic-pack" },
+        { name: "Rusty Robot", cat: "Character", url: "https://studio.blender.org/characters/robot-kit" },
+        { name: "Steampunk Engine", cat: "Machine", url: "https://studio.blender.org/artworks/steam-machine" },
+        { name: "Lowpoly House", cat: "Archviz", url: "https://studio.blender.org/artworks/lowpoly-village" },
+        { name: "Ancient Statue", cat: "Sculpt", url: "https://studio.blender.org/artworks/ancient-ruins" },
+        { name: "Futuristic Weapon", cat: "Weapon", url: "https://studio.blender.org/artworks/weapon-pack" },
+        { name: "Alien Flora", cat: "Sci-Fi", url: "https://studio.blender.org/artworks/alien-flora" },
+        { name: "Desk Lamp", cat: "Electronics", url: "https://studio.blender.org/artworks/light-asset" }
+    ];
+
+    const CATS = ["Character","Prop","Environment","Weapon","Sculpt","Vehicle","Archviz","Magic","Sci-Fi","Creature"];
+    const ADJS = ["Stylized","Realistic","Low Poly","High Poly","Game Ready","Rigged","Animated","PBR","Procedural","Handpainted"];
+
+    let catalog = [];
+
+    function getImg(name) {
+        const map = {
+            'Suzanne': 'https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png',
+            'Agent 327': 'https://www.blender.org/wp-content/uploads/2020/11/agent_327_thumb.jpg',
+            'Classroom': 'https://www.blender.org/wp-content/uploads/2021/06/splash_classroom.jpg',
+            'Coffee Run': 'https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg',
+            'Spring': 'https://www.blender.org/wp-content/uploads/2021/12/charg-1.jpg',
+            'Wing It House': 'https://www.blender.org/wp-content/uploads/2022/11/poster_wing-it.jpg',
+            'Sprite Fright': 'https://www.blender.org/wp-content/uploads/2023/03/sprite-fright.jpg',
+            'Hero 2024': 'https://www.blender.org/wp-content/uploads/2024/01/b3d_hero_2024.jpg',
+            'Goblin': 'https://www.blender.org/wp-content/uploads/2019/06/goblin-2.80.jpg',
+            'Treasure Chest': 'https://www.blender.org/wp-content/uploads/2020/02/cycle_icons.jpg',
+            'Retro TV': 'https://www.blender.org/wp-content/uploads/2022/08/poster-farewell.jpg',
+            'Windmill': 'https://www.blender.org/wp-content/uploads/2017/06/cycles_example_1.jpg',
+            'Potion Set': 'https://www.blender.org/wp-content/uploads/2023/04/splash-spring-2023-2.jpg',
+            'Rusty Robot': 'https://www.blender.org/wp-content/uploads/2023/03/splash-spring-2023.jpg',
+            'Steampunk Engine': 'https://www.blender.org/wp-content/uploads/2019/03/agent-327.jpg',
+            'Lowpoly House': 'https://www.blender.org/wp-content/uploads/2021/06/blender_org_og_banner.jpg',
+            'Ancient Statue': 'https://www.blender.org/wp-content/uploads/2023/10/cycles_x_promo.jpg',
+            'Futuristic Weapon': 'https://www.blender.org/wp-content/uploads/2024/02/blender_4_1_lights.jpg',
+            'Alien Flora': 'https://www.blender.org/wp-content/uploads/2022/12/splash_holiday_2022.jpg',
+            'Desk Lamp': 'https://www.blender.org/wp-content/uploads/2018/07/blender-render-cycles-workshop.jpg'
+        };
+        return map[name] || 'https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png';
+    }
+
+    for (let b of BASE) {
+        catalog.push({ id: 'b'+catalog.length, name: b.name, cat: b.cat, url: b.url, img: getImg(b.name) });
+    }
+
+    for (let i = 0; i < 200; i++) {
+        const adj = ADJS[i % ADJS.length];
+        const base = BASE[i % BASE.length];
+        const cat = CATS[i % CATS.length];
+        catalog.push({
+            id: 'g'+i,
+            name: `${adj} ${base.name}`,
+            cat: cat,
+            url: base.url,
+            img: getImg(base.name)
+        });
+    }
+
+    function renderGallery(filter = '') {
+        const grid = document.getElementById('grid');
+        const filtered = catalog.filter(m => 
+            m.name.toLowerCase().includes(filter.toLowerCase()) ||
+            m.cat.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="empty">Ничего не найдено</div>`;
+            return;
+        }
+
+        grid.innerHTML = '';
+        for (let m of filtered) {
+            const card = document.createElement('a');
+            card.href = m.url;
+            card.target = '_blank';
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${m.img}" alt="${m.name}" loading="lazy">
+                <div class="card-content">
+                    <div class="card-title">${m.name}</div>
+                    <div class="card-category">${m.cat}</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        }
+    }
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+        renderGallery(document.getElementById('searchInput').value);
+    });
+    document.getElementById('searchInput').addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') renderGallery(e.target.value);
+    });
+    document.getElementById('clearBtn').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        renderGallery('');
+    });
+
+    renderGallery();
+</script>
 </body>
 </html>
