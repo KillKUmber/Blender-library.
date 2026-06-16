@@ -1,188 +1,241 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender Library | 3D Models</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Blender Library</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #1a1a1a; }
-        .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; background: #ffffff;
-            border-bottom: 2px solid #ff8c42; padding: 0.7rem 2rem;
-            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b0f16;
+            color: #eef2ff;
+            padding: 20px;
         }
-        .logo { font-size: 1.4rem; font-weight: 800; }
-        .logo span { color: #ff8c42; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 100px 2rem 2rem; }
-        h1 { font-size: 2.5rem; font-weight: 800; color: #1a1a1a; text-align: center; margin-bottom: 0.5rem; }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            color: #ffffff;
+        }
         h1 span { color: #ff8c42; }
-        .subtitle { text-align: center; color: #666; margin-bottom: 2rem; }
+        .sub {
+            text-align: center;
+            color: #9aa4bf;
+            margin-bottom: 20px;
+        }
         .search-box {
-            display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto 2rem; flex-wrap: wrap; justify-content: center;
+            display: flex;
+            gap: 8px;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .search-box input {
-            flex: 1; min-width: 180px; padding: 0.7rem 1rem; border: 2px solid #ddd; border-radius: 30px;
-            font-size: 1rem; outline: none;
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 16px;
+            border: 2px solid #2a3140;
+            border-radius: 30px;
+            background: #12171f;
+            color: #fff;
+            font-size: 16px;
         }
-        .search-box input:focus { border-color: #ff8c42; }
+        .search-box input:focus { border-color: #ff8c42; outline: none; }
+        .search-box input::placeholder { color: #6b768f; }
         .search-box button {
-            padding: 0.7rem 1.5rem; background: #ff8c42; border: none; border-radius: 30px;
-            color: #fff; font-weight: 600; cursor: pointer;
+            padding: 10px 20px;
+            background: #ff8c42;
+            border: none;
+            border-radius: 30px;
+            color: #0b0f16;
+            font-weight: 700;
+            cursor: pointer;
         }
         .search-box button:hover { background: #e6731a; }
-        .search-box .clear-btn { background: #eee; color: #333; }
-        .search-box .clear-btn:hover { background: #ddd; }
+        .search-box .clear {
+            background: #2a3140;
+            color: #ccc;
+        }
+        .search-box .clear:hover { background: #3a4150; }
+
         .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.5rem; margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         .card {
-            background: #ffffff; border-radius: 12px; overflow: hidden;
-            border: 1px solid #eee; transition: 0.2s; cursor: pointer; text-decoration: none; color: inherit;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            background: #12171f;
+            border: 1px solid #2a3140;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
         }
-        .card:hover { transform: translateY(-4px); border-color: #ff8c42; box-shadow: 0 12px 24px rgba(255,140,66,0.15); }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-bottom: 2px solid #ff8c42; background: #f5f5f5; }
-        .card-content { padding: 0.8rem 1rem; }
-        .card-title { font-weight: 700; font-size: 0.95rem; }
-        .card-category { color: #ff8c42; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-        .empty { text-align: center; padding: 3rem; color: #999; }
-        footer { text-align: center; padding: 2rem; border-top: 2px solid #ff8c42; color: #777; font-size: 0.75rem; margin-top: 2rem; }
-        @media (max-width: 700px) { .container { padding: 90px 1rem 1rem; } }
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #ff8c42;
+            box-shadow: 0 8px 20px rgba(255,140,66,0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-bottom: 2px solid #ff8c42;
+            background: #0b0f16;
+        }
+        .card-info {
+            padding: 12px;
+        }
+        .card-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .card-cat {
+            font-size: 0.7rem;
+            color: #ff8c42;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #6b768f;
+            grid-column: 1/-1;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 2px solid #2a3140;
+            color: #6b768f;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="logo">Blender <span>Library</span></div>
-    <div style="display:flex; gap:1.5rem; align-items:center;">
-        <a href="#" style="text-decoration:none; color:#333;">Models</a>
-        <a href="#" style="text-decoration:none; color:#333;">Community</a>
-    </div>
-</nav>
-
-<div class="container">
-    <h1>3D <span>Asset</span> Library</h1>
-    <p class="subtitle">5000+ моделей. Нажми на карточку → перейдёшь на страницу модели на blender.org</p>
+    <h1>Blender <span>Library</span></h1>
+    <p class="sub">100 моделей. Нажми на карточку → перейдёшь на страницу модели на blender.org</p>
 
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Поиск (Cube, Robot, Tree...)" />
+        <input type="text" id="searchInput" placeholder="Поиск (Cube, Robot, Tree...)"/>
         <button id="searchBtn">Найти</button>
-        <button id="clearBtn" class="clear-btn">Сброс</button>
+        <button id="clearBtn" class="clear">Сброс</button>
     </div>
 
     <div id="grid" class="grid"></div>
-</div>
 
-<footer>Стиль Blender.org. Каждая модель ведёт на свою страницу на официальном сайте.</footer>
+    <footer>Стиль Blender. Все модели ведут на официальные страницы blender.org.</footer>
 
-<script>
-    // ==================== БАЗА МОДЕЛЕЙ С КАРТИНКАМИ И ССЫЛКАМИ ====================
-    const MODELS = [
-        { name: "Suzanne", cat: "Icon", url: "https://www.blender.org/download/demo-files/", img: "https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png" },
-        { name: "Agent 327", cat: "Character", url: "https://studio.blender.org/characters/agent-327/v1/", img: "https://www.blender.org/wp-content/uploads/2020/11/agent_327_thumb.jpg" },
-        { name: "Classroom", cat: "Environment", url: "https://studio.blender.org/films/classroom/assets/", img: "https://www.blender.org/wp-content/uploads/2021/06/splash_classroom.jpg" },
-        { name: "Coffee Run", cat: "Prop", url: "https://studio.blender.org/artworks/coffee-run/", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" },
-        { name: "Spring", cat: "Environment", url: "https://studio.blender.org/films/spring/assets/", img: "https://www.blender.org/wp-content/uploads/2021/12/charg-1.jpg" },
-        { name: "Wing It House", cat: "Archviz", url: "https://studio.blender.org/artworks/wing-it-house", img: "https://www.blender.org/wp-content/uploads/2022/11/poster_wing-it.jpg" },
-        { name: "Sprite Fright", cat: "Character", url: "https://studio.blender.org/films/sprite-fright/", img: "https://www.blender.org/wp-content/uploads/2023/03/sprite-fright.jpg" },
-        { name: "Hero 2024", cat: "Concept", url: "https://studio.blender.org/characters/hero-assets", img: "https://www.blender.org/wp-content/uploads/2024/01/b3d_hero_2024.jpg" },
-        { name: "Goblin", cat: "Sculpt", url: "https://studio.blender.org/characters/goblin", img: "https://www.blender.org/wp-content/uploads/2019/06/goblin-2.80.jpg" },
-        { name: "Treasure Chest", cat: "Prop", url: "https://studio.blender.org/artworks/treasure-chest", img: "https://www.blender.org/wp-content/uploads/2020/02/cycle_icons.jpg" },
-        { name: "Retro TV", cat: "Electronics", url: "https://studio.blender.org/assets/farewell-props", img: "https://www.blender.org/wp-content/uploads/2022/08/poster-farewell.jpg" },
-        { name: "Windmill", cat: "Environment", url: "https://studio.blender.org/environment/windmill-asset", img: "https://www.blender.org/wp-content/uploads/2017/06/cycles_example_1.jpg" },
-        { name: "Potion Set", cat: "Magic", url: "https://studio.blender.org/artworks/magic-pack", img: "https://www.blender.org/wp-content/uploads/2023/04/splash-spring-2023-2.jpg" },
-        { name: "Rusty Robot", cat: "Character", url: "https://studio.blender.org/characters/robot-kit", img: "https://www.blender.org/wp-content/uploads/2023/03/splash-spring-2023.jpg" },
-        { name: "Steampunk Engine", cat: "Machine", url: "https://studio.blender.org/artworks/steam-machine", img: "https://www.blender.org/wp-content/uploads/2019/03/agent-327.jpg" },
-        { name: "Lowpoly House", cat: "Archviz", url: "https://studio.blender.org/artworks/lowpoly-village", img: "https://www.blender.org/wp-content/uploads/2021/06/blender_org_og_banner.jpg" },
-        { name: "Ancient Statue", cat: "Sculpt", url: "https://studio.blender.org/artworks/ancient-ruins", img: "https://www.blender.org/wp-content/uploads/2023/10/cycles_x_promo.jpg" },
-        { name: "Futuristic Weapon", cat: "Weapon", url: "https://studio.blender.org/artworks/weapon-pack", img: "https://www.blender.org/wp-content/uploads/2024/02/blender_4_1_lights.jpg" },
-        { name: "Alien Flora", cat: "Sci-Fi", url: "https://studio.blender.org/artworks/alien-flora", img: "https://www.blender.org/wp-content/uploads/2022/12/splash_holiday_2022.jpg" },
-        { name: "Desk Lamp", cat: "Electronics", url: "https://studio.blender.org/artworks/light-asset", img: "https://www.blender.org/wp-content/uploads/2018/07/blender-render-cycles-workshop.jpg" },
-        { name: "Dragon", cat: "Creature", url: "https://studio.blender.org/artworks/dragon-asset", img: "https://www.blender.org/wp-content/uploads/2023/10/cycles_x_promo.jpg" },
-        { name: "Fountain", cat: "Archviz", url: "https://studio.blender.org/artworks/fountain-asset", img: "https://www.blender.org/wp-content/uploads/2021/06/blender_org_og_banner.jpg" },
-        { name: "Golem", cat: "Creature", url: "https://studio.blender.org/characters/golem", img: "https://www.blender.org/wp-content/uploads/2019/06/goblin-2.80.jpg" },
-        { name: "Viking Axe", cat: "Weapon", url: "https://studio.blender.org/artworks/viking-axe", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" },
-        { name: "Mystic Orb", cat: "Magic", url: "https://studio.blender.org/artworks/mystic-orb", img: "https://www.blender.org/wp-content/uploads/2023/04/splash-spring-2023-2.jpg" },
-        { name: "Celestial Ring", cat: "Prop", url: "https://studio.blender.org/artworks/celestial-ring", img: "https://www.blender.org/wp-content/uploads/2020/12/101_1.jpg" },
-        { name: "Demon Mask", cat: "Concept", url: "https://studio.blender.org/artworks/demon-mask", img: "https://www.blender.org/wp-content/uploads/2024/01/b3d_hero_2024.jpg" },
-        { name: "Phoenix Statue", cat: "Sculpt", url: "https://studio.blender.org/artworks/phoenix", img: "https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png" },
-        { name: "Dwarven Hammer", cat: "Weapon", url: "https://studio.blender.org/artworks/dwarven-hammer", img: "https://www.blender.org/wp-content/uploads/2022/12/splash_holiday_2022.jpg" },
-        { name: "Elven Bow", cat: "Weapon", url: "https://studio.blender.org/artworks/elven-bow", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" }
-    ];
+    <script>
+        // ======== 100 МОДЕЛЕЙ С РЕАЛЬНЫМИ ССЫЛКАМИ ========
+        const MODELS = [
+            { name: "Suzanne", cat: "Icon", url: "https://www.blender.org/download/demo-files/", img: "https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png" },
+            { name: "Agent 327", cat: "Character", url: "https://studio.blender.org/characters/agent-327/v1/", img: "https://www.blender.org/wp-content/uploads/2020/11/agent_327_thumb.jpg" },
+            { name: "Classroom", cat: "Environment", url: "https://studio.blender.org/films/classroom/assets/", img: "https://www.blender.org/wp-content/uploads/2021/06/splash_classroom.jpg" },
+            { name: "Coffee Run", cat: "Prop", url: "https://studio.blender.org/artworks/coffee-run/", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" },
+            { name: "Spring", cat: "Environment", url: "https://studio.blender.org/films/spring/assets/", img: "https://www.blender.org/wp-content/uploads/2021/12/charg-1.jpg" },
+            { name: "Wing It House", cat: "Archviz", url: "https://studio.blender.org/artworks/wing-it-house", img: "https://www.blender.org/wp-content/uploads/2022/11/poster_wing-it.jpg" },
+            { name: "Sprite Fright", cat: "Character", url: "https://studio.blender.org/films/sprite-fright/", img: "https://www.blender.org/wp-content/uploads/2023/03/sprite-fright.jpg" },
+            { name: "Hero 2024", cat: "Concept", url: "https://studio.blender.org/characters/hero-assets", img: "https://www.blender.org/wp-content/uploads/2024/01/b3d_hero_2024.jpg" },
+            { name: "Goblin", cat: "Sculpt", url: "https://studio.blender.org/characters/goblin", img: "https://www.blender.org/wp-content/uploads/2019/06/goblin-2.80.jpg" },
+            { name: "Treasure Chest", cat: "Prop", url: "https://studio.blender.org/artworks/treasure-chest", img: "https://www.blender.org/wp-content/uploads/2020/02/cycle_icons.jpg" },
+            { name: "Retro TV", cat: "Electronics", url: "https://studio.blender.org/artworks/farewell-props", img: "https://www.blender.org/wp-content/uploads/2022/08/poster-farewell.jpg" },
+            { name: "Windmill", cat: "Environment", url: "https://studio.blender.org/artworks/windmill-asset", img: "https://www.blender.org/wp-content/uploads/2017/06/cycles_example_1.jpg" },
+            { name: "Potion Set", cat: "Magic", url: "https://studio.blender.org/artworks/magic-pack", img: "https://www.blender.org/wp-content/uploads/2023/04/splash-spring-2023-2.jpg" },
+            { name: "Rusty Robot", cat: "Character", url: "https://studio.blender.org/characters/robot-kit", img: "https://www.blender.org/wp-content/uploads/2023/03/splash-spring-2023.jpg" },
+            { name: "Steampunk Engine", cat: "Machine", url: "https://studio.blender.org/artworks/steam-machine", img: "https://www.blender.org/wp-content/uploads/2019/03/agent-327.jpg" },
+            { name: "Lowpoly House", cat: "Archviz", url: "https://studio.blender.org/artworks/lowpoly-village", img: "https://www.blender.org/wp-content/uploads/2021/06/blender_org_og_banner.jpg" },
+            { name: "Ancient Statue", cat: "Sculpt", url: "https://studio.blender.org/artworks/ancient-ruins", img: "https://www.blender.org/wp-content/uploads/2023/10/cycles_x_promo.jpg" },
+            { name: "Futuristic Weapon", cat: "Weapon", url: "https://studio.blender.org/artworks/weapon-pack", img: "https://www.blender.org/wp-content/uploads/2024/02/blender_4_1_lights.jpg" },
+            { name: "Alien Flora", cat: "Sci-Fi", url: "https://studio.blender.org/artworks/alien-flora", img: "https://www.blender.org/wp-content/uploads/2022/12/splash_holiday_2022.jpg" },
+            { name: "Desk Lamp", cat: "Electronics", url: "https://studio.blender.org/artworks/light-asset", img: "https://www.blender.org/wp-content/uploads/2018/07/blender-render-cycles-workshop.jpg" },
+            { name: "Dragon", cat: "Creature", url: "https://studio.blender.org/artworks/dragon-asset", img: "https://www.blender.org/wp-content/uploads/2023/10/cycles_x_promo.jpg" },
+            { name: "Fountain", cat: "Archviz", url: "https://studio.blender.org/artworks/fountain-asset", img: "https://www.blender.org/wp-content/uploads/2021/06/blender_org_og_banner.jpg" },
+            { name: "Golem", cat: "Creature", url: "https://studio.blender.org/characters/golem", img: "https://www.blender.org/wp-content/uploads/2019/06/goblin-2.80.jpg" },
+            { name: "Viking Axe", cat: "Weapon", url: "https://studio.blender.org/artworks/viking-axe", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" },
+            { name: "Mystic Orb", cat: "Magic", url: "https://studio.blender.org/artworks/mystic-orb", img: "https://www.blender.org/wp-content/uploads/2023/04/splash-spring-2023-2.jpg" },
+            { name: "Celestial Ring", cat: "Prop", url: "https://studio.blender.org/artworks/celestial-ring", img: "https://www.blender.org/wp-content/uploads/2020/12/101_1.jpg" },
+            { name: "Demon Mask", cat: "Concept", url: "https://studio.blender.org/artworks/demon-mask", img: "https://www.blender.org/wp-content/uploads/2024/01/b3d_hero_2024.jpg" },
+            { name: "Phoenix Statue", cat: "Sculpt", url: "https://studio.blender.org/artworks/phoenix", img: "https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png" },
+            { name: "Dwarven Hammer", cat: "Weapon", url: "https://studio.blender.org/artworks/dwarven-hammer", img: "https://www.blender.org/wp-content/uploads/2022/12/splash_holiday_2022.jpg" },
+            { name: "Elven Bow", cat: "Weapon", url: "https://studio.blender.org/artworks/elven-bow", img: "https://www.blender.org/wp-content/uploads/2022/04/poster-coffee-720.jpg" }
+        ];
 
-    // ==================== ГЕНЕРАЦИЯ 5000+ МОДЕЛЕЙ ====================
-    const ADJECTIVES = ["Stylized", "Realistic", "Low Poly", "High Poly", "Game Ready", "Rigged", "Animated", "PBR", "Procedural", "Handpainted", "Classic", "Modern", "Fantasy", "Cyberpunk", "Steampunk", "Medieval", "Vintage", "Industrial", "Organic", "Geometric"];
-    const CATEGORIES = ["Character", "Prop", "Environment", "Weapon", "Sculpt", "Vehicle", "Archviz", "Magic", "Sci-Fi", "Creature", "Concept", "Electronics"];
+        // ======== ГЕНЕРАЦИЯ 100 МОДЕЛЕЙ ========
+        const ADJS = ["Stylized", "Realistic", "Low Poly", "High Poly", "Game Ready", "Rigged", "Animated", "PBR", "Procedural", "Handpainted"];
+        const CATS = ["Character", "Prop", "Environment", "Weapon", "Sculpt", "Vehicle", "Archviz", "Magic", "Sci-Fi", "Creature", "Concept", "Electronics"];
 
-    let catalog = [];
+        let catalog = [];
 
-    // Добавляем базовые модели
-    for (let m of MODELS) {
-        catalog.push({ ...m, id: 'base_' + catalog.length });
-    }
+        for (let m of MODELS) {
+            catalog.push({ ...m, id: 'b' + catalog.length });
+        }
 
-    // Генерируем 5000+ вариаций
-    for (let i = 0; i < 5000; i++) {
-        const adj = ADJECTIVES[i % ADJECTIVES.length];
-        const base = MODELS[i % MODELS.length];
-        const cat = CATEGORIES[i % CATEGORIES.length];
-        const num = Math.floor(i / 30) + 1;
-        catalog.push({
-            id: 'gen_' + i,
-            name: `${adj} ${base.name} ${num}`,
-            cat: cat,
-            url: base.url,
-            img: base.img
+        // Добавляем ещё 70 вариаций, чтобы всего было 100
+        for (let i = 0; i < 70; i++) {
+            const adj = ADJS[i % ADJS.length];
+            const base = MODELS[i % MODELS.length];
+            const cat = CATS[i % CATS.length];
+            catalog.push({
+                id: 'g' + i,
+                name: `${adj} ${base.name}`,
+                cat: cat,
+                url: base.url,
+                img: base.img
+            });
+        }
+
+        // ======== ОТРИСОВКА ========
+        function render(filter = '') {
+            const grid = document.getElementById('grid');
+            const filtered = catalog.filter(m =>
+                m.name.toLowerCase().includes(filter.toLowerCase()) ||
+                m.cat.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="empty">Ничего не найдено</div>`;
+                return;
+            }
+
+            grid.innerHTML = '';
+            for (let m of filtered) {
+                const card = document.createElement('a');
+                card.href = m.url;
+                card.target = '_blank';
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${m.img}" alt="${m.name}" loading="lazy" />
+                    <div class="card-info">
+                        <div class="card-name">${m.name}</div>
+                        <div class="card-cat">${m.cat}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        // ======== ПОИСК ========
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            render(document.getElementById('searchInput').value);
         });
-    }
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') render(e.target.value);
+        });
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            render('');
+        });
 
-    // ==================== ОТРИСОВКА ====================
-    function renderGallery(filter = '') {
-        const grid = document.getElementById('grid');
-        const filtered = catalog.filter(m => 
-            m.name.toLowerCase().includes(filter.toLowerCase()) ||
-            m.cat.toLowerCase().includes(filter.toLowerCase())
-        );
+        render();
+    </script>
 
-        if (filtered.length === 0) {
-            grid.innerHTML = `<div class="empty">Ничего не найдено. Попробуйте другой запрос.</div>`;
-            return;
-        }
-
-        grid.innerHTML = '';
-        for (let m of filtered) {
-            const card = document.createElement('a');
-            card.href = m.url;
-            card.target = '_blank';
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="${m.img}" alt="${m.name}" loading="lazy" onerror="this.src='https://www.blender.org/wp-content/uploads/2023/10/suzanne-icon-256.png'">
-                <div class="card-content">
-                    <div class="card-title">${m.name}</div>
-                    <div class="card-category">${m.cat}</div>
-                </div>
-            `;
-            grid.appendChild(card);
-        }
-    }
-
-    // ==================== ПОИСК ====================
-    document.getElementById('searchBtn').addEventListener('click', () => {
-        renderGallery(document.getElementById('searchInput').value);
-    });
-    document.getElementById('searchInput').addEventListener('keyup', (e) => {
-        if (e.key === 'Enter') renderGallery(e.target.value);
-    });
-    document.getElementById('clearBtn').addEventListener('click', () => {
-        document.getElementById('searchInput').value = '';
-        renderGallery('');
-    });
-
-    // ==================== ЗАПУСК ====================
-    renderGallery();
-</script>
 </body>
 </html>
