@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender Model Market - 100+ Models</title>
+    <title>Blender Model Hub - 50 Models</title>
     <style>
         :root {
             --bg-main: #1d1d1d;
@@ -161,13 +161,14 @@
         }
 
         .model-title {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 600;
             margin-bottom: 15px;
             color: #fff;
             text-decoration: none;
             transition: color 0.2s;
             display: inline-block;
+            line-height: 1.4;
         }
 
         .model-title:hover {
@@ -269,7 +270,7 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Blender_logo_no_text.svg" alt="Blender Logo" class="blender-logo">
             <h1>Blender <span>Hub</span></h1>
         </div>
-        <p>Кликните на название или картинку модели, чтобы перейти к скачиванию на страницу Blender</p>
+        <p>Нажмите на модель, чтобы перейти на её индивидуальную страницу на официальном сайте Blender</p>
         
         <div class="controls-panel">
             <input type="text" id="searchInput" class="search-input" placeholder="Быстрый поиск по названию...">
@@ -286,23 +287,22 @@
     </main>
 
     <script>
-        // Функция автоматической генерации красивой картинки-заглушки (в стиле абстрактного 3D-рендера)
-        function generateProceduralImage(title, seed) {
+        // Функция автоматической генерации красивой картинки на Canvas (без 404 ошибок)
+        function generateProceduralImage(seed) {
             const canvas = document.createElement('canvas');
             canvas.width = 400;
             canvas.height = 280;
             const ctx = canvas.getContext('2d');
 
-            // Создаем темный градиент для фона
             const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            const hue = (seed * 45) % 360;
+            const hue = (seed * 68) % 360;
             bgGrad.addColorStop(0, '#141414');
-            bgGrad.addColorStop(1, `hsl(${hue}, 30%, 15%)`);
+            bgGrad.addColorStop(1, `hsl(${hue}, 35%, 15%)`);
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Рисуем сетку 3D пространства (как во вьюпорте Blender)
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+            // Сетка вьюпорта Blender
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
             ctx.lineWidth = 1;
             for(let i = 0; i < canvas.width; i += 40) {
                 ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
@@ -311,75 +311,76 @@
                 ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
             }
 
-            // Рисуем абстрактную геометрическую фигуру ("модель")
-            ctx.fillStyle = `hsl(${(hue + 40) % 360}, 75%, 50%)`;
+            // Абстрактная фигурка
+            ctx.fillStyle = `hsl(${(hue + 50) % 360}, 85%, 50%)`;
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = `hsl(${(hue + 40) % 360}, 75%, 50%)`;
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = `hsl(${(hue + 50) % 360}, 85%, 50%)`;
 
             ctx.beginPath();
-            // Генерируем форму на основе синусов/косинусов
-            ctx.moveTo(canvas.width/2 + Math.cos(seed)*60, canvas.height/2 + Math.sin(seed)*60);
+            ctx.moveTo(canvas.width/2 + Math.cos(seed)*55, canvas.height/2 + Math.sin(seed)*55);
             for(let step = 1; step <= 5; step++) {
                 let angle = (step * (Math.PI * 2) / 5) + seed;
-                let x = canvas.width/2 + Math.cos(angle) * 70;
-                let y = canvas.height/2 + Math.sin(angle) * 70;
+                let x = canvas.width/2 + Math.cos(angle) * 65;
+                let y = canvas.height/2 + Math.sin(angle) * 65;
                 ctx.lineTo(x, y);
             }
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
 
-            // Сбрасываем тени
             ctx.shadowBlur = 0;
-
-            // Накладываем легкий текст-пометку в угол
-            ctx.fillStyle = 'rgba(255,255,255,0.3)';
-            ctx.font = '12px Segoe UI';
-            ctx.fillText("RENDER_PREVIEW", 20, 35);
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.font = '11px Segoe UI';
+            ctx.fillText("PREVIEW_RENDER", 20, 35);
 
             return canvas.toDataURL('image/png');
         }
 
-        // Базовые заготовки для создания 100 уникальных моделей
-        const initialModels = [
-            { title: "Сузанна и гео-ноды (Сцена с обезьяной)", section: "#geometry-nodes", likes: 142, comments: ["Классический тест!", "Гео-ноды настроены шикарно."] },
-            { title: "Спортивный Киберпанк Автомобиль (Сцена Charge)", section: "#charge", likes: 389, comments: ["Машина из фильма!", "Текстуры просто огонь."] },
-            { title: "Стилизованный Фэнтези Персонаж (Sprite Fright)", section: "#sprite-fright", likes: 95, comments: ["Отличный риггинг тела."] },
-            { title: "Существо Квадрокоптер (Сцена Крабо-дрон)", section: "#animation", likes: 210, comments: ["Анимация супер."] },
-            { title: "Уютный лофт интерьер (Рендер Cycles)", section: "#cycles", likes: 64, comments: ["Свет реалистичный."] },
-            { title: "Архитектурный павильон (Сцена Барселона)", section: "#eevee", likes: 112, comments: ["Для теста EEVEE."] }
+        // Реальные ссылки на отдельные страницы проектов на официальном сайте Blender
+        const coreProjects = [
+            { title: "3D Модель Киберпанк Машины (Проект Charge)", url: "https://studio.blender.org/films/charge/", likes: 245, comments: ["Шикарная машина!", "Видел этот мультфильм."] },
+            { title: "Фэнтези Существа и Монстры (Проект Sprite Fright)", url: "https://studio.blender.org/films/sprite-fright/", likes: 189, comments: ["Очень крутые персонажи."] },
+            { title: "Интерьерная Сцена и Роботы (Проект Tears of Steel)", url: "https://mango.blender.org/", likes: 120, comments: ["Классика VFX в Блендере."] },
+            { title: "Космический Корабль и Фантастика (Проект Cosmic Laundromat)", url: "https://gooseberry.blender.org/", likes: 310, comments: ["Масштаб поражает."] },
+            { title: "Реалистичный Рендеринг Движка Cycles (Демо Сцены)", url: "https://www.blender.org/features/cycles/", likes: 415, comments: ["Свет настроен идеально."] },
+            { title: "Двумерная Анимация Grease Pencil (Сценариумы)", url: "https://www.blender.org/features/grease-pencil/", likes: 95, comments: ["Интересный 2D/3D стиль."] }
         ];
 
-        // Добавляем модели до 100 штук
-        const names = ["Космический корабль", "Древний замок", "Мощный Двигатель", "Катана самурая", "Шлем штурмовика", "Монстр Ктулху", "Механический Робот", "Низкополигональное дерево", "Футуристичный бластер", "Кристалл энергии"];
-        const sections = ["#cycles", "#eevee", "#geometry-nodes", "#animation", "#grease-pencil"];
+        // Рандомные фигурки и концепты для заполнения до 50 штук (ссылаются на целевые тематические страницы Blender Studio/Features)
+        const randomNames = ["Модель Двигателя", "Футуристичный Робот", "Древний Замок", "Катана Самурая", "Космический Спутник", "Шлем Пилота", "Низкополигональный Дрон", "Энергетический Кристалл", "Стилизованный Персонаж", "Архитектурный Домик"];
+        const targetUrls = [
+            "https://studio.blender.org/training/stylized-character-workflow/",
+            "https://studio.blender.org/characters/",
+            "https://www.blender.org/features/",
+            "https://studio.blender.org/pipeline/"
+        ];
 
         const allModels = [];
 
-        // Сначала пушим первые детальные модели
-        initialModels.forEach((m, idx) => {
+        // Добавляем первые 6 проработанных проектов
+        coreProjects.forEach((proj, idx) => {
             allModels.push({
-                title: m.title,
-                imgUrl: generateProceduralImage(m.title, idx + 1),
-                downloadUrl: `https://www.blender.org/download/demo-files/${m.section}`,
-                likes: m.likes,
-                comments: m.comments,
+                title: proj.title,
+                imgUrl: generateProceduralImage(idx + 1),
+                downloadUrl: proj.url,
+                likes: proj.likes,
+                comments: proj.comments,
                 liked: false
             });
         });
 
-        // Заполняем оставшиеся до 100
-        for (let i = 0; i < 94; i++) {
-            const currentName = `${names[i % names.length]} (Модель ${i + 1})`;
-            const randomSection = sections[i % sections.length];
+        // Заполняем массив ровно до 50 карточек
+        for (let i = 0; i < 44; i++) {
+            const currentName = `${randomNames[i % randomNames.length]} (Вариант ${i + 1})`;
+            const randomUrl = targetUrls[i % targetUrls.length];
             allModels.push({
                 title: currentName,
-                imgUrl: generateProceduralImage(currentName, i + 10),
-                downloadUrl: `https://www.blender.org/download/demo-files/${randomSection}`,
-                likes: Math.floor(Math.random() * 50) + 5,
-                comments: ["Хороший концепт для сцены."],
+                imgUrl: generateProceduralImage(i + 15),
+                downloadUrl: randomUrl,
+                likes: Math.floor(Math.random() * 80) + 10,
+                comments: ["Отличный рендер для портфолио."],
                 liked: false
             });
         }
@@ -402,7 +403,6 @@
             }
 
             models.forEach((model) => {
-                // Ищем оригинальный индекс в главном массиве allModels, чтобы лайки/комменты сохранялись правильно
                 const originalIndex = allModels.findIndex(m => m.title === model.title);
                 const card = document.createElement('div');
                 card.className = 'model-card';
@@ -474,23 +474,23 @@
             return allModels.filter(m => m.title.toLowerCase().includes(text));
         }
 
-        // Быстрый поиск
+        // Поиск по названию
         searchInput.addEventListener('input', () => {
             render(getCurrentFilteredList());
         });
 
-        // Загрузка пользовательского изображения
+        // Добавление кастомного изображения через кнопку
         uploadInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const newModel = {
-                        title: file.name.split('.')[0] || "Моё изображение",
+                        title: file.name.split('.')[0] || "Моя загруженная сцена",
                         imgUrl: event.target.result, 
-                        downloadUrl: "https://www.blender.org/download/demo-files/",
+                        downloadUrl: "https://studio.blender.org/characters/",
                         likes: 0,
-                        comments: ["Вы загрузили эту картинку!"],
+                        comments: ["Вы добавили эту картинку в локальную ленту!"],
                         liked: false
                     };
                     allModels.unshift(newModel);
@@ -500,7 +500,7 @@
             }
         });
 
-        // Запуск
+        // Первоначальный запуск системы
         render(allModels);
     </script>
 </body>
