@@ -3,187 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Models — Blender Collection</title>
+    <title>Blender Model Market - 100+ Free 3D Models</title>
     <style>
+        /* Базовые настройки в стиле Blender UI */
+        :root {
+            --bg-main: #1d1d1d;
+            --bg-card: #2b2b2b;
+            --bg-search: #3d3d3d;
+            --text-main: #e0e0e0;
+            --text-muted: #909090;
+            --accent: #e58723; /* Фирменный оранжевый Blender */
+            --accent-hover: #ff9f3b;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: #e0e0e0;
-            line-height: 1.6;
-        }
-        header {
-            background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             padding: 20px;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
             text-align: center;
-            border-bottom: 3px solid #ff7b00;
         }
-        h1 {
-            color: white;
+
+        header h1 {
             font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fff;
         }
-        .logo {
-            color: #ff7b00;
-            font-weight: bold;
+
+        header h1 span {
+            color: var(--accent);
         }
+
+        /* Поисковая строка */
         .search-container {
+            max-width: 500px;
             margin: 20px auto;
-            max-width: 600px;
             position: relative;
         }
-        #searchInput {
+
+        .search-input {
             width: 100%;
             padding: 12px 20px;
-            font-size: 16px;
-            border: 2px solid #444;
-            border-radius: 30px;
-            background-color: #2a2a2a;
-            color: white;
-        }
-        #searchInput:focus {
+            background-color: var(--bg-search);
+            border: 2px solid transparent;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
             outline: none;
-            border-color: #ff7b00;
+            transition: border-color 0.3s;
         }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        /* Сетка для 100 моделей */
         .models-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
+
+        /* Карточка модели */
         .model-card {
-            background-color: #2a2a2a;
+            background-color: var(--bg-card);
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
         }
+
         .model-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 6px 20px rgba(229, 135, 35, 0.2);
         }
-        .model-image {
+
+        /* Превью картинки (заглушка, если нет своих PNG) */
+        .model-image-box {
             width: 100%;
             height: 180px;
-            object-fit: cover;
-            background-color: #333;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
+
+        .model-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Инфо внутри карточки */
         .model-info {
             padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
+
         .model-title {
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 5px;
-            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .model-desc {
-            color: #aaa;
-            font-size: 0.9rem;
+
+        .model-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
         }
-        footer {
+
+        /* Кнопка скачивания */
+        .download-btn {
+            margin-top: auto;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
             text-align: center;
-            padding: 20px;
-            background-color: #222;
-            border-top: 1px solid #444;
-            margin-top: 40px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .download-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        /* Сообщение, если ничего не найдено */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4px 0;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            display: none;
         }
     </style>
 </head>
 <body>
+
     <header>
-        <h1><span class="logo">Blender</span> 3D Models Collection</h1>
-        <p>Более 100 бесплатных 3D-моделей для скачивания</p>
+        <h1>Blender <span>Models</span> Archive</h1>
+        <p>Скачивайте бесплатные 3D-модели для ваших проектов</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Быстрый поиск модели по названию...">
+        </div>
     </header>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Поиск моделей...">
-    </div>
-
-    <div class="models-grid" id="modelsContainer">
-        <!-- Карточки моделей будут добавлены через JavaScript -->
-    </div>
-
-    <footer>
-        <p>© 2024 Blender 3D Models Collection. Все модели взяты из официального репозитория Blender.</p>
-    </footer>
+    <main class="models-grid" id="modelsGrid">
+        <div class="no-results" id="noResults">Модели с таким названием не найдены :(</div>
+    </main>
 
     <script>
-        // Массив с данными о моделях
-        const models = [
-            {
-                id: 1,
-                title: "Low-Poly Tree",
-                description: "Упрощённая 3D-модель дерева для игр",
-                image: "https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Tree",
-                downloadUrl: "#", // Здесь будет ссылка на скачивание
-                officialUrl: "https://www.blender.org"
-            },
-            {
-                id: 2,
-                title: "Modern Chair",
-                description: "Стильный стул в современном стиле",
-                image: "https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Chair",
-                downloadUrl: "#",
-                officialUrl: "https://www.blender.org"
-            },
-            // Добавляем ещё 98 моделей (для примера — дублируем с разными ID и названиями)
-            ...Array(98).fill().map((_, i) => ({
-                id: i + 3,
-                title: `3D Model ${i + 3}`,
-                description: `Описание модели ${i + 3} для демонстрации`,
-                image: `https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Model+${i + 3}`,
-                downloadUrl: "#",
-                officialUrl: "https://www.blender.org"
-            }))
-        ];
+        // Список категорий для генерации разнообразных названий
+        const categories = ["Character", "Sci-Fi Weapon", "Cyberpunk Car", "Low-Poly Tree", "Medieval Sword", "Futuristic Helmet", "Interior Chair", "Monster", "Spaceship", "Robot Drone"];
+        
+        const grid = document.getElementById('modelsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const noResults = document.getElementById('noResults');
+        
+        // Массив для хранения данных о 100 моделях
+        const modelsData = [];
 
-        // Функция для отображения моделей
-        function displayModels(filteredModels) {
-            const container = document.getElementById('modelsContainer');
-            container.innerHTML = '';
+        // 1. Генерируем базу данных из 100 моделей
+        for (let i = 1; i <= 100; i++) {
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const title = `${randomCategory} #${i}`;
+            
+            // В реальном проекте замени пути ниже на свои файлы, например: `images/model_${i}.png` и `files/model_${i}.blend`
+            // Сейчас используются красивые картинки-заглушки (picsum)
+            const imgUrl = `https://picsum.photos/seed/${i + 10}/300/200`; 
+            const downloadUrl = `#`; 
 
-            filteredModels.forEach(model => {
+            modelsData.push({ id: i, title: title, img: imgUrl, download: downloadUrl });
+        }
+
+        // 2. Функция рендеринга карточек на страницу
+        function renderModels(models) {
+            // Удаляем старые карточки (кроме сообщения "не найдено")
+            const cards = grid.querySelectorAll('.model-card');
+            cards.forEach(card => card.remove());
+
+            if (models.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            } else {
+                noResults.style.display = 'none';
+            }
+
+            // Создаем HTML для каждой модели
+            models.forEach(model => {
                 const card = document.createElement('div');
                 card.className = 'model-card';
                 card.innerHTML = `
-                    <img src="${model.image}" alt="${model.title}" class="model-image">
+                    <div class="model-image-box">
+                        <img src="${model.img}" alt="${model.title}" class="model-image" loading="lazy">
+                    </div>
                     <div class="model-info">
                         <div class="model-title">${model.title}</div>
-                        <div class="model-desc">${model.description}</div>
+                        <div class="model-meta">Формат: .blend / .fbx</div>
+                        <a href="${model.download}" class="download-btn" download>Скачать (.blend)</a>
                     </div>
                 `;
-                card.addEventListener('click', () => {
-                    if (model.downloadUrl !== "#") {
-                        // Если есть прямая ссылка на скачивание, скачиваем
-                        window.open(model.downloadUrl, '_blank');
-                    } else {
-                        // Иначе переходим на официальный сайт
-                        window.open(model.officialUrl, '_blank');
-                    }
-                });
-                container.appendChild(card);
+                grid.appendChild(card);
             });
         }
 
-        // Функция поиска
-        function searchModels() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = models.filter(model =>
-                model.title.toLowerCase().includes(searchTerm) ||
-                model.description.toLowerCase().includes(searchTerm)
-            );
-            displayModels(filtered);
-        }
+        // Первоначальный вывод всех 100 моделей
+        renderModels(modelsData);
 
-        // Инициализация: отображаем все модели при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            displayModels(models);
+        // 3. Логика быстрого поиска
+        searchInput.addEventListener('input', (e) => {
+            const searchText = e.target.value.toLowerCase().trim();
+            
+            // Фильтруем массив по вхождению текста в название
+            const filteredModels = modelsData.filter(model => {
+                return model.title.toLowerCase().includes(searchText);
+            });
 
-            // Добавляем обработчик для поиска
-            document.getElementById('searchInput').addEventListener('input', searchModels);
+            // Перерисовываем только подходящие карточки
+            renderModels(filteredModels);
         });
     </script>
 </body>
