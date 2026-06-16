@@ -21,18 +21,32 @@
             padding: 20px;
             text-align: center;
             border-bottom: 3px solid #ff7b00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
         }
         h1 {
             color: white;
             font-size: 2.5rem;
         }
-        .logo {
+        .logo-text {
             color: #ff7b00;
-            font-weight: bold;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
         }
         .search-container {
-            margin: 20px auto;
-            max-width: 600px;
+            flex: 1;
+            margin-right: 10px;
             position: relative;
         }
         #searchInput {
@@ -48,11 +62,22 @@
             outline: none;
             border-color: #ff7b00;
         }
+        .upload-btn {
+            background-color: #ff7b00;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
         .models-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
             padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
         .model-card {
             background-color: #2a2a2a;
@@ -67,7 +92,7 @@
         }
         .model-image {
             width: 100%;
-            height: 180px;
+            height: 220px;
             object-fit: cover;
             background-color: #333;
         }
@@ -78,10 +103,59 @@
             font-weight: bold;
             margin-bottom: 5px;
             color: white;
+            font-size: 1.2rem;
         }
         .model-desc {
             color: #aaa;
             font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        .model-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .like-btn, .comment-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .like-btn:hover, .comment-btn:hover {
+            color: #ff7b00;
+        }
+        .liked {
+            color: #ff7b00 !important;
+        }
+        .comments-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         footer {
             text-align: center;
@@ -94,16 +168,33 @@
 </head>
 <body>
     <header>
-        <h1><span class="logo">Blender</span> 3D Models Collection</h1>
-        <p>Более 100 бесплатных 3D-моделей для скачивания</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Blender_logo_no_text.svg/220px-Blender_logo_no_text.svg.png" alt="Blender Logo" class="logo">
+        <h1><span class="logo-text">Blender</span> 3D Models Collection</h1>
     </header>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Поиск моделей...">
+    <div class="controls">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Поиск моделей...">
+        </div>
+        <button class="upload-btn" onclick="document.getElementById('fileUpload').click()">Добавить модель</button>
+        <input type="file" id="fileUpload" style="display:none;" accept="image/*">
     </div>
 
     <div class="models-grid" id="modelsContainer">
         <!-- Карточки моделей будут добавлены через JavaScript -->
+    </div>
+
+    <!-- Модальное окно для комментариев -->
+    <div class="comments-modal" id="commentsModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCommentsModal()">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <div id="commentsList"></div>
+            <div style="margin-top: 20px;">
+                <textarea id="newComment" rows="3" style="width:100%; background:#333; color:white; border:1px solid #444; padding:10px;" placeholder="Ваш комментарий..."></textarea>
+                <button onclick="addComment()" style="margin-top:10px; background:#ff7b00; color:white; border:none; padding:8px 15px; border-radius:5px;">Добавить комментарий</button>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -115,76 +206,7 @@
         const models = [
             {
                 id: 1,
-                title: "Low-Poly Tree",
-                description: "Упрощённая 3D-модель дерева для игр",
-                image: "https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Tree",
-                downloadUrl: "#", // Здесь будет ссылка на скачивание
-                officialUrl: "https://www.blender.org"
-            },
-            {
-                id: 2,
-                title: "Modern Chair",
-                description: "Стильный стул в современном стиле",
-                image: "https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Chair",
-                downloadUrl: "#",
-                officialUrl: "https://www.blender.org"
-            },
-            // Добавляем ещё 98 моделей (для примера — дублируем с разными ID и названиями)
-            ...Array(98).fill().map((_, i) => ({
-                id: i + 3,
-                title: `3D Model ${i + 3}`,
-                description: `Описание модели ${i + 3} для демонстрации`,
-                image: `https://via.placeholder.com/250x180/3a3a3a/ff7b00?text=Model+${i + 3}`,
-                downloadUrl: "#",
-                officialUrl: "https://www.blender.org"
-            }))
-        ];
-
-        // Функция для отображения моделей
-        function displayModels(filteredModels) {
-            const container = document.getElementById('modelsContainer');
-            container.innerHTML = '';
-
-            filteredModels.forEach(model => {
-                const card = document.createElement('div');
-                card.className = 'model-card';
-                card.innerHTML = `
-                    <img src="${model.image}" alt="${model.title}" class="model-image">
-                    <div class="model-info">
-                        <div class="model-title">${model.title}</div>
-                        <div class="model-desc">${model.description}</div>
-                    </div>
-                `;
-                card.addEventListener('click', () => {
-                    if (model.downloadUrl !== "#") {
-                        // Если есть прямая ссылка на скачивание, скачиваем
-                        window.open(model.downloadUrl, '_blank');
-                    } else {
-                        // Иначе переходим на официальный сайт
-                        window.open(model.officialUrl, '_blank');
-                    }
-                });
-                container.appendChild(card);
-            });
-        }
-
-        // Функция поиска
-        function searchModels() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = models.filter(model =>
-                model.title.toLowerCase().includes(searchTerm) ||
-                model.description.toLowerCase().includes(searchTerm)
-            );
-            displayModels(filtered);
-        }
-
-        // Инициализация: отображаем все модели при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            displayModels(models);
-
-            // Добавляем обработчик для поиска
-            document.getElementById('searchInput').addEventListener('input', searchModels);
-        });
-    </script>
-</body>
-</html>
+                title: "Дерево",
+                description: "Реалистичная 3D‑модель дерева для ландшафтного дизайна",
+                image: "https://assets.mixamo.com/3d/models/tree-low-poly.jpg",
+                officialUrl: "https://www.blender.org/download/demo
